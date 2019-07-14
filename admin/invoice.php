@@ -6,7 +6,7 @@
       if(isset($_GET['delete'])){
         $id = sanitize($_GET['delete']);
         $db->query("UPDATE invoice SET deleted = 1 WHERE id = '$id'");
-        header('Location: blog.php');
+        header('Location: invoice.php');
       }
 
       if(isset($_GET['add']) || isset($_GET['edit'])){
@@ -24,18 +24,21 @@
         $price = ((isset($_POST['price']) && $_POST['price'] != '')?sanitize($_POST['price']):'');
 
         if(isset($_GET['edit'])){
-          $invoiceNo = ((isset($_POST['invoiceNo']) && $_POST['invoiceNo'] != '')?sanitize($_POST['invoiceNo']):$blog['invoiceNo']);
-          $invoiceDate = ((isset($_POST['invoiceDate']) && $_POST['invoiceDate'] != '')?sanitize($_POST['invoiceDate']):$blog['invoiceDate']);
-          $dateOfSupply = ((isset($_POST['dateOfSupply']) && $_POST['dateOfSupply'] != '')?sanitize($_POST['dateOfSupply']):$blog['dateOfSupply']);
-          $nameOfCompany = ((isset($_POST['nameOfCompany']) && $_POST['nameOfCompany'] != '')?sanitize($_POST['nameOfCompany']):$blog['nameOfCompany']);
-          $addressOfCompany = ((isset($_POST['addressOfCompany']) && $_POST['addressOfCompany'] != '')?sanitize($_POST['addressOfCompany']):$blog['addressOfCompany']);
+          $edit_id = (int)$_GET['edit'];
+          $invoiceResults = $db->query("SELECT * FROM invoice WHERE id = '$edit_id'");
+          $invoice = mysqli_fetch_assoc($invoiceResults);
+          $invoiceNo = ((isset($_POST['invoiceNo']) && $_POST['invoiceNo'] != '')?sanitize($_POST['invoiceNo']):$invoice['invoiceNo']);
+          $invoiceDate = ((isset($_POST['invoiceDate']) && $_POST['invoiceDate'] != '')?sanitize($_POST['invoiceDate']):$invoice['invoiceDate']);
+          $dateOfSupply = ((isset($_POST['dateOfSupply']) && $_POST['dateOfSupply'] != '')?sanitize($_POST['dateOfSupply']):$invoice['dateOfSupply']);
+          $nameOfCompany = ((isset($_POST['nameOfCompany']) && $_POST['nameOfCompany'] != '')?sanitize($_POST['nameOfCompany']):$invoice['nameOfCompany']);
+          $addressOfCompany = ((isset($_POST['addressOfCompany']) && $_POST['addressOfCompany'] != '')?sanitize($_POST['addressOfCompany']):$invoice['addressOfCompany']);
           
-          $pono = ((isset($_POST['pono']) && $_POST['pono'] != '')?sanitize($_POST['pono']):$blog['pono']);
-          $gst = ((isset($_POST['gst']) && $_POST['gst'] != '')?sanitize($_POST['gst']):$blog['gst']);
-          $productName = ((isset($_POST['productName']) && $_POST['productName'] != '')?sanitize($_POST['productName']):$blog['productName']);
-          $hsn = ((isset($_POST['hsn']) && $_POST['hsn'] != '')?sanitize($_POST['hsn']):$blog['hsn']);
-          $quantity = ((isset($_POST['quantity']) && $_POST['quantity'] != '')?sanitize($_POST['quantity']):$blog['quantity']);
-          $price = ((isset($_POST['price']) && $_POST['price'] != '')?sanitize($_POST['price']):$blog['price']);
+          $pono = ((isset($_POST['pono']) && $_POST['pono'] != '')?sanitize($_POST['pono']):$invoice['pono']);
+          $gst = ((isset($_POST['gst']) && $_POST['gst'] != '')?sanitize($_POST['gst']):$invoice['gst']);
+          $productName = ((isset($_POST['productName']) && $_POST['productName'] != '')?sanitize($_POST['productName']):$invoice['productName']);
+          $hsn = ((isset($_POST['hsn']) && $_POST['hsn'] != '')?sanitize($_POST['hsn']):$invoice['hsn']);
+          $quantity = ((isset($_POST['quantity']) && $_POST['quantity'] != '')?sanitize($_POST['quantity']):$invoice['quantity']);
+          $price = ((isset($_POST['price']) && $_POST['price'] != '')?sanitize($_POST['price']):$invoice['price']);
         }
 
         if($_POST){
