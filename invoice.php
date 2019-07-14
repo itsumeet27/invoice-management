@@ -1,12 +1,46 @@
 <!DOCTYPE html>
+<html lang="en">
 
 <?php 
   include('db.php'); 
-  $sql = "SELECT * FROM invoice";
-  $rows = $db->query($sql);
+  $sql = "SELECT * FROM invoice WHERE deleted=0";
+  $invoices = $db->query($sql);
+
+  function sanitize($dirty){
+    return htmlentities($dirty,ENT_QUOTES,"UTF-8");
+  }
 ?>
 
-<html lang="en">
+<?php 
+  if(isset($_GET['invoice_id'])){
+    $id = sanitize((int)$_GET['invoice_id']);
+    $sql = "SELECT * FROM invoice WHERE id = '$id'";
+    $sqlResult = $db->query($sql);
+    $invoiceCount = mysqli_num_rows($sqlResult);
+    if($invoiceCount > 0){
+      while ($row = mysqli_fetch_array($sqlResult)) {
+        $invoiceNo = $row['invoiceNo'];
+        $invoiceDate = $row['invoiceDate'];
+        $dateOfSupply = $row['dateOfSupply'];
+        $nameOfCompany = $row['nameOfCompany'];
+        $addressOfCompany = $row['addressOfCompany'];
+        $pono = $row['pono'];
+        $gst = $row['gst'];
+        $productName = $row['productName'];
+        $hsn = $row['hsn'];
+        $price = $row['price'];
+        $quantity = $row['quantity'];
+      }
+    }else{
+      echo "Invoice does not exist";
+      exit();
+    }
+  }
+  else{
+    echo "Data is missing, please select the invoice";
+    exit();
+  }
+?>
 
 <head>
   <meta charset="utf-8">
@@ -28,8 +62,6 @@
 <body>
 
   <div style="height: 100vh" class="container-fluid">
-
-    <?php while($row = $rows->fetch_assoc()): ?>
     <header>
       <h2 class="text-center p-2"><b>AMIT TRADERS</b></h2>
       <p class="text-center">
@@ -48,13 +80,13 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="2"><b>Invoice No:</b> <?php echo $row['invoiceNo']; ?></td>
-            <td><b>Invoice Date: </b> <?php echo $row['invoiceDate']; ?></td>
+            <td colspan="2"><b>Invoice No:</b> <?php echo $invoiceNo; ?></td>
+            <td><b>Invoice Date: </b> <?php echo $invoiceDate; ?></td>
           </tr>         
           <tr>
             <td><b>State: </b> Maharashtra</td>
             <td><b>Pin Code: </b> 401107</td>
-            <td><b>Date of Supply: </b> <?php echo $row['dateOfSupply']; ?></td>
+            <td><b>Date of Supply: </b> <?php echo $dateOfSupply; ?></td>
           </tr>           
         </tbody>
       </table>
@@ -64,16 +96,16 @@
           <td><b>Details of Consignee | Shipped To</b></td>
         </tr>
         <tr>
-          <td><b>Name of Company: </b> <?php echo $row['nameOfCompany']; ?>
-          <td><b>Name of Company: </b> <?php echo $row['nameOfCompany']; ?>
+          <td><b>Name of Company: </b> <?php echo $nameOfCompany; ?>
+          <td><b>Name of Company: </b> <?php echo $nameOfCompany; ?>
         </tr>
         <tr>
-          <td><b>Address of Company: </b> <?php echo $row['addressOfCompany']; ?>
-          <td><b>Address of Company: </b> <?php echo $row['addressOfCompany']; ?>
+          <td><b>Address of Company: </b> <?php echo $addressOfCompany; ?>
+          <td><b>Address of Company: </b> <?php echo $addressOfCompany; ?>
         </tr>
         <tr>
-          <td><b>PO No: </b> <?php echo $row['pono']; ?>
-          <td><b>GST No: </b> <?php echo $row['gst']; ?>
+          <td><b>PO No: </b> <?php echo $pono; ?>
+          <td><b>GST No: </b> <?php echo $gst; ?>
         </tr>
         <tr>
           <td><b>Country: </b> India
@@ -101,10 +133,10 @@
           <td><b>Amount</b></td>
           <td><b>Rate</b></td>
           <td><b>Amount</b></td>
-          <td rowspan="5"><b><?php echo ($row['quantity']*$row['price']*1.18); ?></b></td>
+          <td rowspan="5"><b><?php echo ($quantity*$price*1.18); ?></b></td>
 
           <script type="text/javascript">
-          var total = <?php echo ($row['quantity']*$row['price']*1.18); ?>;
+          var total = <?php echo ($quantity*$price*1.18); ?>;
           function numberToEnglish(n, custom_join_character) {
 
           var string = n.toString(),
@@ -196,18 +228,18 @@
           </script>
         </tr>
         <tr>
-          <td><?php echo $row['id']; ?></td>
-          <td><?php echo $row['productName']; ?></td>
-          <td><?php echo $row['hsn']; ?></td>
-          <td><?php echo $row['quantity']; ?></td>
-          <td><?php echo $row['price']; ?></td>
-          <td><?php echo ($row['quantity']*$row['price']); ?></td>
+          <td><?php echo $id; ?></td>
+          <td><?php echo $productName; ?></td>
+          <td><?php echo $hsn; ?></td>
+          <td><?php echo $quantity; ?></td>
+          <td><?php echo $price; ?></td>
+          <td><?php echo ($quantity*$price); ?></td>
           <td>9%</td>
-          <td><?php echo ($row['quantity']*$row['price']*0.09); ?></td>
+          <td><?php echo ($quantity*$price*0.09); ?></td>
           <td>9%</td>
-          <td><?php echo ($row['quantity']*$row['price']*0.09); ?></td>
+          <td><?php echo ($quantity*$price*0.09); ?></td>
           <td>18%</td>
-          <td><?php echo ($row['quantity']*$row['price']*0.18); ?></td>
+          <td><?php echo ($quantity*$price*0.18); ?></td>
 
         </tr>
       </table>
@@ -215,16 +247,16 @@
         <tr>
           <td colspan="5"><b>Total Amount in Words</b></td>
           <td><b>Total Amount Before GST</b></td>
-          <td><?php echo ($row['quantity']*$row['price']); ?></td>
+          <td><?php echo $quantity*$price; ?></td>
         </tr>
         <tr>
           <td rowspan="5" colspan="5"><script type="text/javascript">document.write(numberToEnglish(total), ' Only.')</script></td>
           <td><b>Add CGST (9%)</b></td>
-          <td><?php echo ($row['quantity']*$row['price']*0.09); ?></td>
+          <td><?php echo ($quantity*$price*0.09); ?></td>
         </tr>
         <tr>
           <td><b>Add SGST (9%)</b></td>
-          <td><?php echo ($row['quantity']*$row['price']*0.09); ?></td>
+          <td><?php echo ($quantity*$price*0.09); ?></td>
         </tr>
         <tr>
           <td><b>Add IGST (9%)</b></td>
@@ -232,11 +264,11 @@
         </tr>
         <tr>
           <td><b>Total GST</b></td>
-          <td><?php echo ($row['quantity']*$row['price']*0.18); ?></td>
+          <td><?php echo ($quantity*$price*0.18); ?></td>
         </tr>
         <tr>
           <td><b>Total Amount After GST</b></td>
-          <td><b><?php echo ($row['quantity']*$row['price']*1.18); ?></b></td>
+          <td><b><?php echo ($quantity*$price*1.18); ?></b></td>
         </tr>
       </table>
       <table class="table table-bordered">
@@ -261,5 +293,4 @@
         </tbody>
       </table>
     </main>
-    <?php endwhile; ?>
   </div>
