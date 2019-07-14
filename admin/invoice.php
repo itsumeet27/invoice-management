@@ -12,6 +12,7 @@
       if(isset($_GET['add']) || isset($_GET['edit'])){
         $parentQuery = $db->query("SELECT * FROM invoice");
         $invoiceNo = ((isset($_POST['invoiceNo']) && $_POST['invoiceNo'] != '')?sanitize($_POST['invoiceNo']):'');
+        $productId = ((isset($_POST['productId']) && $_POST['productId'] != '')?sanitize($_POST['productId']):'');
         $invoiceDate = ((isset($_POST['invoiceDate']) && $_POST['invoiceDate'] != '')?sanitize($_POST['invoiceDate']):'');
         $dateOfSupply = ((isset($_POST['dateOfSupply']) && $_POST['dateOfSupply'] != '')?sanitize($_POST['dateOfSupply']):'');
         $nameOfCompany = ((isset($_POST['nameOfCompany']) && $_POST['nameOfCompany'] != '')?sanitize($_POST['nameOfCompany']):'');
@@ -28,6 +29,7 @@
           $invoiceResults = $db->query("SELECT * FROM invoice WHERE id = '$edit_id'");
           $invoice = mysqli_fetch_assoc($invoiceResults);
           $invoiceNo = ((isset($_POST['invoiceNo']) && $_POST['invoiceNo'] != '')?sanitize($_POST['invoiceNo']):$invoice['invoiceNo']);
+          $productId = ((isset($_POST['productId']) && $_POST['productId'] != '')?sanitize($_POST['productId']):$invoice['productId']);
           $invoiceDate = ((isset($_POST['invoiceDate']) && $_POST['invoiceDate'] != '')?sanitize($_POST['invoiceDate']):$invoice['invoiceDate']);
           $dateOfSupply = ((isset($_POST['dateOfSupply']) && $_POST['dateOfSupply'] != '')?sanitize($_POST['dateOfSupply']):$invoice['dateOfSupply']);
           $nameOfCompany = ((isset($_POST['nameOfCompany']) && $_POST['nameOfCompany'] != '')?sanitize($_POST['nameOfCompany']):$invoice['nameOfCompany']);

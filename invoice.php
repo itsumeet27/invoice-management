@@ -20,6 +20,7 @@
     if($invoiceCount > 0){
       while ($row = mysqli_fetch_array($sqlResult)) {
         $invoiceNo = $row['invoiceNo'];
+        $productId = $row['productId'];
         $invoiceDate = $row['invoiceDate'];
         $dateOfSupply = $row['dateOfSupply'];
         $nameOfCompany = $row['nameOfCompany'];
@@ -228,7 +229,7 @@
           </script>
         </tr>
         <tr>
-          <td><?php echo $id; ?></td>
+          <td><?php echo $productId; ?></td>
           <td><?php echo $productName; ?></td>
           <td><?php echo $hsn; ?></td>
           <td><?php echo $quantity; ?></td>
